@@ -2,6 +2,7 @@
 
 source scripts/decrypt.sh
 source scripts/download_firmware.sh
+source scripts/extract_others.sh
 source scripts/extract_partitions.sh
 source scripts/extract_super.sh
 source scripts/merge_super.sh
@@ -22,8 +23,32 @@ mkdir -p dumper && cd dumper
 ### Sanitize And Generate Folders
 INPUTDIR="${PROJECT_DIR}"/input		# Firmware Download/Preload Directory
 UTILSDIR="${PROJECT_DIR}"/utils		# Contains Supportive Programs
-OUTDIR="${PROJECT_DIR}"/out			# Contains Final Extracted Files
+OUTDIR="${PROJECT_DIR}"/work			# Contains Final Extracted Files
 TMPDIR="${OUTDIR}"/tmp
+SDAT2IMG="${UTILSDIR}"/sdat2img.py
+SIMG2IMG="${UTILSDIR}"/bin/simg2img
+PACKSPARSEIMG="${UTILSDIR}"/bin/packsparseimg
+UNSIN="${UTILSDIR}"/unsin
+PAYLOAD_EXTRACTOR="${UTILSDIR}"/bin/payload-dumper-go
+DTB_EXTRACTOR="${UTILSDIR}"/extract-dtb.py
+DTC="${UTILSDIR}"/dtc
+VMLINUX2ELF="${UTILSDIR}"/vmlinux-to-elf/vmlinux-to-elf
+KALLSYMS_FINDER="${UTILSDIR}"/vmlinux-to-elf/kallsyms-finder
+OZIPDECRYPT="${UTILSDIR}"/oppo_ozip_decrypt/ozipdecrypt.py
+OFP_QC_DECRYPT="${UTILSDIR}"/oppo_decrypt/ofp_qc_decrypt.py
+OFP_MTK_DECRYPT="${UTILSDIR}"/oppo_decrypt/ofp_mtk_decrypt.py
+OPSDECRYPT="${UTILSDIR}"/oppo_decrypt/opscrypto.py
+SPLITUAPP="${UTILSDIR}"/splituapp.py
+PACEXTRACTOR="${UTILSDIR}"/pacextractor/python/pacExtractor.py
+NB0_EXTRACT="${UTILSDIR}"/nb0-extract
+KDZ_EXTRACT="${UTILSDIR}"/kdztools/unkdz.py
+DZ_EXTRACT="${UTILSDIR}"/kdztools/undz.py
+RUUDECRYPT="${UTILSDIR}"/RUU_Decrypt_Tool
+EXTRACT_IKCONFIG="${UTILSDIR}"/extract-ikconfig
+UNPACKBOOT="${UTILSDIR}"/unpackboot.sh
+AML_EXTRACT="${UTILSDIR}"/aml-upgrade-package-extract
+AFPTOOL_EXTRACT="${UTILSDIR}"/bin/afptool
+RK_EXTRACT="${UTILSDIR}"/bin/rkImageMaker
 LPUNPACK="${UTILSDIR}"/lpunpack.py
 ofp_mtk_decrypt="${UTILSDIR}"/ofp_mtk_decrypt.py
 ofp_qc_decrypt="${UTILSDIR}"/ofp_qc_decrypt.py
@@ -63,11 +88,13 @@ main() {
         else
             decrypt
         fi
+
         merge_super
         extract_super
         extract_partitions
+        extract_others
 }
 
-main
+main $1 $2
 
 ### EOF
