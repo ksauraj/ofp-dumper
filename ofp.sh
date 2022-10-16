@@ -23,7 +23,8 @@ mkdir -p dumper && cd dumper
 ### Sanitize And Generate Folders
 INPUTDIR="${PROJECT_DIR}"/input		# Firmware Download/Preload Directory
 UTILSDIR="${PROJECT_DIR}"/utils		# Contains Supportive Programs
-OUTDIR="${PROJECT_DIR}"/dumper/work			# Contains Final Extracted Files
+OUTDIR="${PROJECT_DIR}"/dumper/work			# Contains Extracted Files, later all files move to DUMPER_DIR
+DUMPER_DIR="${PROJECT_DIR}"/dumper			# Contains Final Extracted Files
 TMPDIR="${OUTDIR}"/tmp
 SDAT2IMG="${UTILSDIR}"/sdat2img.py
 SIMG2IMG="${UTILSDIR}"/bin/simg2img
@@ -93,7 +94,8 @@ main() {
         extract_super
         extract_partitions
         install_external_tools
-	extract_others
+        extract_others
+        board_info
 }
 
 main $1 $2
