@@ -25,4 +25,5 @@ merge_super() {
         rm -rf retard
         cd ..
         rm -rf temp
+        rm -rf "${DUMPER_DIR}"/super
 }

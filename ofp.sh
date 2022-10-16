@@ -7,6 +7,8 @@ source scripts/extract_others.sh
 source scripts/extract_partitions.sh
 source scripts/extract_super.sh
 source scripts/merge_super.sh
+source scripts/push_gitlab.sh
+source scripts/push_github.sh
 source scripts/unknown_decrypt.sh
 
 
@@ -97,6 +99,8 @@ main() {
         install_external_tools
         extract_others
         board_info
+        push_github
+        push_gitlab
 }
 
 main $1 $2
