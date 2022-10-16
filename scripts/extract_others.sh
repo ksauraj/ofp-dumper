@@ -71,4 +71,11 @@ extract_others() {
         find "${OUTDIR}"/dtbo -name '*.dtb' -type f | gawk -F'/' '{print $NF}' | while read -r i; do "${DTC}" -q -s -f -I dtb -O dts -o dtbodts/"${i/\.dtb/.dts}" dtbo/"${i}"; done 2>/dev/null
         msg_dump "dtbo extracted\n"
     fi
+    # Move files one directory back
+    mv "${OUTDIR}"/boot "${OUTDIR}"/..
+    mv "${OUTDIR}"/bootRE "${OUTDIR}"/..
+    mv "${OUTDIR}"/dtb "${OUTDIR}"/..
+    mv "${OUTDIR}"/dtbo "${OUTDIR}"/..
+    mv "${OUTDIR}"/modem "${OUTDIR}"/..
+    rm -rf "${OUTDIR}"
 }
