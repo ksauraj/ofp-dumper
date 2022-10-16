@@ -3,7 +3,7 @@
 push_gitlab() {
         # Gitlab Vars
         cd "${DUMPER_DIR}"
-        if [ -z  "GITLAB_TOKEN" ]; then
+        if [ -z  "$GITLAB_TOKEN" ]; then
             echo "Gitlab Token Not Found"
             echo "Dumping Locally"
             exit 1
