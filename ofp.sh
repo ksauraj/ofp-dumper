@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+source scripts/board_info.sh
 source scripts/decrypt.sh
 source scripts/download_firmware.sh
 source scripts/extract_others.sh
