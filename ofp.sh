@@ -54,24 +54,24 @@ AML_EXTRACT="${UTILSDIR}"/aml-upgrade-package-extract
 AFPTOOL_EXTRACT="${UTILSDIR}"/bin/afptool
 RK_EXTRACT="${UTILSDIR}"/bin/rkImageMaker
 LPUNPACK="${UTILSDIR}"/lpunpack.py
+EROFSFUSE="${UTILSDIR}"/erofsfuse
 ofp_mtk_decrypt="${UTILSDIR}"/ofp_mtk_decrypt.py
 ofp_qc_decrypt="${UTILSDIR}"/ofp_qc_decrypt.py
-EROFSFUSE="${UTILSDIR}"/erofsfuse
 
 ### Simple Vars
 OFP_LINK="$1"
 DTYPE="$2"
 regex='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
-string="$link"
+string="$OFP_LINK"
 
 ### main function
 main() {
-        if [[ $string =~ $regex ]]; then
-        download_firmware $1
+        if [[ "$string" =~ "$regex" ]]; then
+            download_firmware $1
         else
-        echo "Copying Firmware"
-        cp -v ../"$1" ${PROJECT_DIR}/dumper
-        echo "Firmware copied..."
+            echo "Copying Firmware"
+            cp -v ../"$1" ${PROJECT_DIR}/dumper
+            echo "Firmware copied..."
             if [ -f *.zip ]; then
                 unzip *.zip && rm *.zip
                 cp */*.ofp ./
