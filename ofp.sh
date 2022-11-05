@@ -10,7 +10,7 @@ source scripts/merge_super.sh
 source scripts/push_gitlab.sh
 source scripts/push_github.sh
 source scripts/unknown_decrypt.sh
-
+source scripts/tg-utils.sh
 
 ### Set Base Project Directory
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
@@ -66,12 +66,16 @@ string="$OFP_LINK"
 
 ### main function
 main() {
-        if [[ "$string" =~ "$regex" ]]; then
+        if [[ $string =~ $regex ]]; then
+            
+            tg --sendmsg "$BOT_CHAT_ID" "Downloading Firmware"  
             download_firmware $1
         else
             echo "Copying Firmware"
+            tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Copying Firmware."
             cp -v ../"$1" ${PROJECT_DIR}/dumper
             echo "Firmware copied..."
+            tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Firmware copied."
             if [ -f *.zip ]; then
                 unzip *.zip && rm *.zip
                 cp */*.ofp ./
@@ -89,19 +93,38 @@ main() {
         fi
         if [ -z "$2" ]; then
             unknown_decrypt
+            tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Trying Blind Decryption."
         else
             decrypt
+            tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Decrypting OFP."
         fi
 
         merge_super
+        tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Merging Super."
         extract_super
+        tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Extrcating Super."
         extract_partitions
+        tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Extracting Partitions"
         install_external_tools
+        tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Installing External Tools"
         extract_others
+        tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Extract other partitions"
         board_info
+        tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Create Board-info.txt"
         push_github
+        tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Start Pushing."
         push_gitlab
-}
+        printf "<b>ʙʀᴀɴᴅ: %s</b>" "${brand}" >| "${OUTDIR}"/tg.html
+        {
+          printf "\n<b>ᴅᴇᴠɪᴄᴇ: %s</b>" "${codename}"
+          printf "\n<b>ᴠᴇʀsɪᴏɴ:</b> %s" "${release}"
+          printf "\n<b>ғɪɴɢᴇʀᴘʀɪɴᴛ:</b> %s" "${fingerprint}"
+          printf "\n<a href=\"https://%s/%s/%s/-/tree/%s/\">ɢɪᴛʟᴀʙ ᴛʀᴇᴇ</a>" "${GITLAB_INSTANCE}" "${GIT_ORG}" "${repo}" "${branch}"
+          printf "\n<b>ғᴏʟʟᴏᴡ @saurajdumps</b>"
+        } >> "${OUTDIR}"/tg.html
+        TEXT=$(cat "${OUTDIR}"/tg.html)
+        tg --editmsghtml "$BOT_CHAT_ID" "$SENT_MSG_ID" "$TEXT"
+  }
 
 main $1 $2
 
