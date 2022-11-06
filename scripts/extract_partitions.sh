@@ -8,13 +8,13 @@ extract_partitions() {
             if ! echo "${p}" | grep -q "boot\|recovery\|dtbo\|vendor_boot\|tz"; then
                             mkdir -p "$p"
                             if [ -f "$p"_a.img ]; then
-                                ${EROFSFUSE} "$p"_a.img "$p"
+                                ${EROFSFUSE} "$p"_a.img "$p" || 7z x "$p"_a.img -y -o"$p"
                                 mkdir -p ../"${p}_"
                                 cp -rf "${p}/"* ../"${p}_"
                                 umount "${p}"
                                 mv ../"${p}_/" ../"${p}"
                             elif [ -f "$p".img ]; then
-                                ${EROFSFUSE} "$p".img "$p"
+                                ${EROFSFUSE} "$p".img "$p" || 7z x "$p".img -y -o"$p"
                                 mkdir -p ../"${p}_"
                                 cp -rf "${p}/"* ../"${p}_"
                                 umount "${p}"
