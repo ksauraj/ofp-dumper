@@ -87,32 +87,33 @@ main() {
                 OFP_FILE=${OFPFILE}
                 OFPNAME=${OFPFILE%.*}
             else
-                echo "Not correct firmware."
+                echo "Invalid firmware."
+                tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Invalid Firmware."
             fi
 
         fi
         if [ -z "$2" ]; then
-            unknown_decrypt
             tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Trying Blind Decryption."
+            unknown_decrypt
         else
-            decrypt
             tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Decrypting OFP."
+            decrypt
         fi
 
-        merge_super
         tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Merging Super."
-        extract_super
+        merge_super
         tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Extrcating Super."
-        extract_partitions
+        extract_super
         tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Extracting Partitions"
-        install_external_tools
+        extract_partitions
         tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Installing External Tools"
-        extract_others
+        install_external_tools
         tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Extract other partitions"
-        board_info
+        extract_others
         tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Create Board-info.txt"
-        push_github
+        board_info
         tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Start Pushing."
+        push_github
         push_gitlab
         printf "<b>ʙʀᴀɴᴅ: %s</b>" "${brand}" >| "${OUTDIR}"/tg.html
         {
