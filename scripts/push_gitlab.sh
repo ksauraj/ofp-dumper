@@ -47,9 +47,9 @@ push_gitlab() {
     	[[ ! -s .gitignore ]] && rm .gitignore
     	git add --all
     	if [[ "${GIT_ORG}" == "${GIT_USER}" ]]; then
-    		lab project create ${repo} -d "${description}" --public
+    		lab project create ${repo} -d "${description}" --http --public
     	else
-    		lab project create -g "${GIT_ORG}" "${repo}" -d "${description}" --public
+    		lab project create -g "${GIT_ORG}" "${repo}" -d "${description}" --http --public
     	fi
     	git remote add origin https://"$GITLAB_INSTANCE"/${GIT_ORG}/${repo}.git
     	git commit -asm "Add ${description}"
