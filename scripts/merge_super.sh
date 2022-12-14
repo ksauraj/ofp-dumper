@@ -4,6 +4,7 @@ merge_super() {
 
         echo "Merging images"
         mkdir super
+        find -iname '*.csv' -exec cp -v {} out \;
         cd out
         ln=$(grep -n super.img *scatter*.txt | cut -d : -f 1)
         echo $ln > number.txt
@@ -16,7 +17,7 @@ merge_super() {
         else
             sln=$(($ln+1)) && sed -i "${sln}s/false/true/" *scatter*.txt
         fi
-        sed '2!d' super*.csv >> tmp.txt && sed -i "s/,/ /" tmp* && sed -i "s/,/ /" tmp* && sed -i "s/,/ /" tmp* && sed -i "s/,/ /" tmp* && egrep -o [a-zA-Z0-9.-]*super[a-zA-Z0-9.-]* tmp* >> supermap.sh && sed  -i "1s/^/first=/" supermap.sh && sed  -i "2s/^/second=/" supermap.sh && mkdir -p temp/retard && mkdir -p ../super && sed  -i "3s/^/third=/" supermap.sh && echo "cp \$first \$second \$third temp/retard/" >> supermap.sh && bash supermap.sh && cd temp/retard && sudo apt install simg2img && sudo apt-get install libz-dev
+        sed '2!d' *.csv >> tmp.txt && sed -i "s/,/ /" tmp* && sed -i "s/,/ /" tmp* && sed -i "s/,/ /" tmp* && sed -i "s/,/ /" tmp* && egrep -o [a-zA-Z0-9.-]*super[a-zA-Z0-9.-]* tmp* >> supermap.sh && sed  -i "1s/^/first=/" supermap.sh && sed  -i "2s/^/second=/" supermap.sh && mkdir -p temp/retard && mkdir -p ../super && sed  -i "3s/^/third=/" supermap.sh && echo "cp \$first \$second \$third temp/retard/" >> supermap.sh && bash supermap.sh && cd temp/retard && sudo apt install simg2img && sudo apt-get install libz-dev
         simg2img *super*.img super.img
         mv ../../*super*.img ../../../super
         mv super.img ../..

@@ -2,7 +2,7 @@
 
 decrypt() {
         dtype=$DTYPE
-        OFP_FILE=$(ls)
+        OFP_FILE=$(find -type f -iname '*.ofp')
         echo $OFP_FILE
         if [ $dtype == QC ]
         then

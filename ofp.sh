@@ -73,12 +73,16 @@ main() {
         else
             echo "Copying Firmware"
             tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Copying Firmware."
-            cp -v ../"$1" ${PROJECT_DIR}/dumper
+            ln -v ../"$1" ${PROJECT_DIR}/dumper/"$(basename "$1")"
+            #cp -v ../"$1" ${PROJECT_DIR}/dumper
             echo "Firmware copied..."
             tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Firmware copied."
-            if [ -f *.zip ]; then
-                unzip *.zip && rm *.zip
-                cp */*.ofp ./
+            if [ -f *.zip ] || [ -f *.7z ]; then
+               7z x *.zip -mmt$(nproc --all) || 7z x *.7z -mmt$(nproc --all) && rm *.zip *.7z -fv   
+                cp */*.ofp ./    
+                if [ -f */*.csv ]; then
+                  cp */*.csv ./
+                fi
                 rm -r */
                 OFP_FILE=$(ls)
                 OFPNAME=${OFPFILE%.*}
@@ -128,5 +132,4 @@ main() {
   }
 
 main $1 $2
-
 ### EOF
