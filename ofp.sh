@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 source scripts/board_info.sh
 source scripts/decrypt.sh
 source scripts/download_firmware.sh
