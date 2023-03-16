@@ -1,30 +1,60 @@
 #!/usr/bin/env bash
 
 merge_super() {
+  # CC : @noobyysauraj (Github) / @Ksauraj (Telegram)
+  if [ -z "$1" ]; then
+    # Run in interactive mode.
+    if [ -f test_super.csv ]; then rm test_super.csv; fi
+    cp super_map.csv test_super.csv
+    sed -i '1d' test_super.csv
+    n_lines=$(wc -l test_super.csv | cut -d ' ' -f 1)
+    echo "Select region to merge super images"
+    echo "To make choice choose from 1 to $n_lines"
+    echo "Default : 1"
+    echo ""
+    for i in $(seq 1 $n_lines ); 
+    do 
+        region=$(sed -n "${i}p" test_super.csv | cut -d ',' -f 2)
+        echo $i : $region
+    done
+    read -rp "Select: " -t 10 -N 1 i_region # Wait 10 seconds for user input.
+    echo ""
+    if [ -z $i_region ]; then i_region=1; fi # If no response from user was given, then continue by merging default region.
+    super_1=$(sed -n "${i_region}p" test_super.csv | cut -d ',' -f 3)
+    super_2=$(sed -n "${i_region}p" test_super.csv | cut -d ',' -f 4)
+    super_3=$(sed -n "${i_region}p" test_super.csv | cut -d ',' -f 5)
+    echo "Merging super images for region $region : $super_1 $super_2 $super_3"
+    simg2img "${super_1}" "${super_2}" "${super_3}" super.img
+    if [ -f test_super.csv ]; then rm test_super.csv; fi
+  else
+    # Run in non-interactive mode
+    # Usage : merge_super <Region Codename>
+    # Example : merge_super IN
+    if [ -f test_super.csv ]; then rm test_super.csv; fi
+    cp super_map.csv test_super.csv
+    i_region=$(grep -n $1 test_super.csv | cut -d ':' -f 1 | head -n1)
+    if [ -z "$i_region" ]; then
+      # Rerun script in interactive mode if specified region was not found.
+      echo "Region $1 not found"
+      echo "Executing script in interactive mode."
+      echo ""
+      merge_super
+   else
+      super_1=$(sed -n "${i_region}p" test_super.csv | cut -d ',' -f 3)
+      super_2=$(sed -n "${i_region}p" test_super.csv | cut -d ',' -f 4)
+      super_3=$(sed -n "${i_region}p" test_super.csv | cut -d ',' -f 5)
+      echo "Merging super images : $super_1 $super_2 $super_3"
+      simg2img "${super_1}" "${super_2}" "${super_3}" super.img
+    fi
+    if [ -f test_super.csv ]; then rm test_super.csv; fi
+  fi
+  }
 
-        echo "Merging images"
-        mkdir super
-        find -iname '*.csv' -exec cp -v {} out \;
-        cd out
-        ln=$(grep -n super.img *scatter*.txt | cut -d : -f 1)
-        echo $ln > number.txt
-        sed -i "s/ /,\n/" number.txt
-        gl=$(cat number.txt)
-        if [[ "$gl" = *,* ]];
-        then
-            echo $ln > okay.sh && sed -i "s/ /\n/" okay.sh && sed  -i "1s/^/sln1=/" okay.sh && sed  -i "2s/^/sln2=/" okay.sh && echo '''sln3=$(($sln1+1))''' >> okay.sh && echo '''sln4=$(($sln2+1))''' >> okay.sh && echo '''sed -i "${sln3}s/false/true/" *scatter*.txt && sed -i "${sln4}s/false/true/" *scatter*.txt''' >> okay.sh && bash okay.sh
-            rm okay.sh
-        else
-            sln=$(($ln+1)) && sed -i "${sln}s/false/true/" *scatter*.txt
-        fi
-        sed '2!d' *.csv >> tmp.txt && sed -i "s/,/ /" tmp* && sed -i "s/,/ /" tmp* && sed -i "s/,/ /" tmp* && sed -i "s/,/ /" tmp* && egrep -o [a-zA-Z0-9.-]*super[a-zA-Z0-9.-]* tmp* >> supermap.sh && sed  -i "1s/^/first=/" supermap.sh && sed  -i "2s/^/second=/" supermap.sh && mkdir -p temp/retard && mkdir -p ../super && sed  -i "3s/^/third=/" supermap.sh && echo "cp \$first \$second \$third temp/retard/" >> supermap.sh && bash supermap.sh && cd temp/retard && sudo apt install simg2img && sudo apt-get install libz-dev
-        simg2img *super*.img super.img
-        mv ../../*super*.img ../../../super
-        mv super.img ../..
-        rm -rf temp/retard
-        cd ..
-        rm -rf retard
-        cd ..
-        rm -rf temp
-        rm -rf "${DUMPER_DIR}"/super
+update_scatter() {
+  for line_number in $(grep -n super.img *scatter*.txt | cut -d ':' -f 1); do
+    x_line=$(($line_number+1))
+    sed -i ${x_line}s/false/true/ *scatter*.txt
+  done
 }
+
+
