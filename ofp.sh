@@ -105,7 +105,7 @@ main() {
         fi
 
         tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Merging Super."
-        merge_super && update_scatter
+        merge_super
         tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Extrcating Super."
         extract_super
         tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Extracting Partitions"

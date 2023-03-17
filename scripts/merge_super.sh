@@ -52,12 +52,3 @@ merge_super() {
     if [ -f test_super.csv ]; then rm test_super.csv; fi
   fi
   }
-
-update_scatter() {
-  for line_number in $(grep -n super.img $(find . -iname "*scatter*.txt" ) | cut -d ':' -f 1); do
-    x_line=$(($line_number+1))
-    sed -i ${x_line}s/false/true/ *scatter*.txt
-  done
-}
-
-
