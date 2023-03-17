@@ -2,9 +2,8 @@
 
 extract_super(){
         cd "${PROJECT_DIR}"/dumper
-        pwd
         mkdir -p tmp
-        mv out/super.img tmp
+        mv $(find . -iname "super.img" ) tmp
         cd tmp
         if [[ ! -s super.img.raw ]] && [ -f super.img ]; then
             mv super.img super.img.raw
@@ -21,8 +20,8 @@ extract_super(){
         rm -rf super.img.raw
         cd ..
         mkdir -p work
-        cp out/*.img work
+        mv out/*.img work
         rm -rf out
-        cp tmp/*.img work
+        mv tmp/*.img work
         rm -rf tmp
 }

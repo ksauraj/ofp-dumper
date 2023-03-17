@@ -24,7 +24,8 @@ merge_super() {
     super_2=$(sed -n "${i_region}p" test_super.csv | cut -d ',' -f 4)
     super_3=$(sed -n "${i_region}p" test_super.csv | cut -d ',' -f 5)
     echo "Merging super images for region $region : $super_1 $super_2 $super_3"
-    simg2img "${super_1}" "${super_2}" "${super_3}" super.img
+    cd out && simg2img "${super_1}" "${super_2}" "${super_3}" super.img && cd ..
+    rm -v * >/dev/null # remove unwanted files from directory
     if [ -f test_super.csv ]; then rm test_super.csv; fi
   else
     # Run in non-interactive mode
@@ -44,7 +45,8 @@ merge_super() {
       super_2=$(sed -n "${i_region}p" test_super.csv | cut -d ',' -f 4)
       super_3=$(sed -n "${i_region}p" test_super.csv | cut -d ',' -f 5)
       echo "Merging super images : $super_1 $super_2 $super_3"
-      simg2img "${super_1}" "${super_2}" "${super_3}" super.img
+      cd out && simg2img "${super_1}" "${super_2}" "${super_3}" super.img && cd ..
+      rm -v * >/dev/null # remove unwanted files from directory
     fi
     if [ -f test_super.csv ]; then rm test_super.csv; fi
   fi
