@@ -5,7 +5,7 @@ merge_super() {
   if [ -z "$1" ]; then
     # Run in interactive mode.
     if [ -f test_super.csv ]; then rm test_super.csv; fi
-    cp super_map.csv test_super.csv
+    cp $(find . -iname "super_map.csv") test_super.csv
     sed -i '1d' test_super.csv
     n_lines=$(wc -l test_super.csv | cut -d ' ' -f 1)
     echo "Select region to merge super images"
@@ -32,7 +32,7 @@ merge_super() {
     # Usage : merge_super <Region Codename>
     # Example : merge_super IN
     if [ -f test_super.csv ]; then rm test_super.csv; fi
-    cp super_map.csv test_super.csv
+    cp $(find . -iname "super_map.csv") test_super.csv
     i_region=$(grep -n $1 test_super.csv | cut -d ':' -f 1 | head -n1)
     if [ -z "$i_region" ]; then
       # Rerun script in interactive mode if specified region was not found.
@@ -53,7 +53,7 @@ merge_super() {
   }
 
 update_scatter() {
-  for line_number in $(grep -n super.img *scatter*.txt | cut -d ':' -f 1); do
+  for line_number in $(grep -n super.img $(find . -iname "*scatter*.txt" ) | cut -d ':' -f 1); do
     x_line=$(($line_number+1))
     sed -i ${x_line}s/false/true/ *scatter*.txt
   done
