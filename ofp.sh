@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 source scripts/board_info.sh
 source scripts/decrypt.sh
 source scripts/download_firmware.sh
@@ -80,13 +78,13 @@ main() {
             echo "Firmware copied..."
             tg --editmsg "$BOT_CHAT_ID" "$SENT_MSG_ID" "Firmware copied."
             if [ -f *.zip ] || [ -f *.7z ]; then
-               7z x *.zip -mmt$(nproc --all) || 7z x *.7z -mmt$(nproc --all) && rm *.zip *.7z -fv   
+               7za x *.zip -mmt$(nproc --all) || 7za x *.7z -mmt$(nproc --all) && rm *.zip *.7z -fv
                 cp */*.ofp ./    
                 if [ -f */*.csv ]; then
                   cp */*.csv ./
                 fi
                 rm -r */
-                OFP_FILE=$(ls)
+                OFP_FILE=$(find . -iname '*.ofp')
                 OFPNAME=${OFPFILE%.*}
             elif [ -f *.ofp ]; then
                 OFPFILE=${OFP_LINK##*/}
