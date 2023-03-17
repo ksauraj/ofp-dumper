@@ -2,6 +2,7 @@
 
 merge_super() {
   # CC : @noobyysauraj (Github) / @Ksauraj (Telegram)
+  if [ -f out/super.img ]; then echo "super.img already present, no need to merge" && return ; fi
   if [ -z "$1" ]; then
     # Run in interactive mode.
     if [ -f test_super.csv ]; then rm test_super.csv; fi
