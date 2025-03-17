@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 merge_super() {
-  # CC : @noobyysauraj (Github) / @Ksauraj (Telegram)
+  # CC : @ksauraj (Github) / @Ksauraj (Telegram)
   if [ -f out/super.img ]; then echo "super.img already present, no need to merge" && return ; fi
   if [ -z "$1" ]; then
     # Run in interactive mode.

@@ -10,7 +10,7 @@ push_github() {
                 git config user.email gitsauraj@gmail.com
             fi
             if [[ -z "$(git config --get user.name)" ]]; then
-                git config user.name noobyysauraj
+                git config user.name ksauraj
             fi
             git checkout -b "$branch"
             find . -size +97M -printf '%P\n' -o -name "*sensetime*" -printf '%P\n' -o -name "*.lic" -printf '%P\n' >| .gitignore
