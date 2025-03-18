@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 from struct import unpack
 from binascii import unhexlify, hexlify
-from Crypto.Cipher import AES
+from Cryptodome.Cipher import AES
 import hashlib
 import shutil
 
@@ -220,7 +220,13 @@ def checkhashfile(wfilename, checksums, iscopy):
         if sha256sum != "":
             for x in [0x40000, size]:
                 rf.seek(0)
-                sha256 = hashlib.sha256(rf.read(x))
+                #sha256 = hashlib.sha256(rf.read(x))
+                sha256 = hashlib.sha256()
+                if x == 0x40000:
+                    sha256.update(rf.read(x))
+                if x == size:
+                    for chunk in iter(lambda: rf.read(128 * sha256.block_size), b''):
+                        sha256.update(chunk)
                 if sha256sum != sha256.hexdigest():
                     sha256bad=True
                     sha256status="bad"
