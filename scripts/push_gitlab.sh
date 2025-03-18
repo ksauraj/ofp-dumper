@@ -22,6 +22,13 @@ push_gitlab() {
     repo="${repo:-firmware_dump}"
     description="${description:-Firmware dump}"
     GIT_ORG="${GIT_ORG:-$GIT_USER}"
+    GITLAB_VISIBILITY="${GITLAB_VISIBILITY:-public}"
+    
+    # Validate visibility
+    if [ "$GITLAB_VISIBILITY" != "public" ] && [ "$GITLAB_VISIBILITY" != "private" ]; then
+        echo "Invalid visibility value. Using default: public"
+        GITLAB_VISIBILITY="public"
+    fi
     
     export GIT_USER="ksauraj"
     export LAB_CORE_TOKEN="$GITLAB_TOKEN"
@@ -64,9 +71,9 @@ push_gitlab() {
     git add --all
     
     if [[ "${GIT_ORG}" == "${GIT_USER}" ]]; then
-        lab project create ${repo} -d "${description}" --http --public
+        lab project create ${repo} -d "${description}" --http --visibility="${GITLAB_VISIBILITY}"
     else
-        lab project create -g "${GIT_ORG}" "${repo}" -d "${description}" --http --public
+        lab project create -g "${GIT_ORG}" "${repo}" -d "${description}" --http --visibility="${GITLAB_VISIBILITY}"
     fi
     
     git remote add origin https://"$GITLAB_INSTANCE"/${GIT_ORG}/${repo}.git
@@ -88,4 +95,19 @@ push_gitlab() {
         git commit -asm "Add system for ${description}"
         git push https://${GIT_USER}:${GITLAB_TOKEN}@"$GITLAB_INSTANCE"/${GIT_ORG}/${repo}.git "${branch}"
     )
+    
+    # Ensure repository visibility is set correctly using GitLab API
+    echo "Verifying repository visibility..."
+    PROJECT_ID=$(echo "${GIT_ORG}/${repo}" | sed 's/\//%2F/g')
+    curl -s -X PUT \
+        -H "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -d "{\"visibility\":\"${GITLAB_VISIBILITY}\"}" \
+        "https://${GITLAB_INSTANCE}/api/v4/projects/${PROJECT_ID}" > /dev/null
+    
+    if [ $? -eq 0 ]; then
+        echo "Repository visibility set to ${GITLAB_VISIBILITY}"
+    else
+        echo "Warning: Failed to verify repository visibility. Please check manually."
+    fi
 }
